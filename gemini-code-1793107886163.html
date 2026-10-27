@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa de Árboles - BRUNAS Subparcela 1</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- CSS de Leaflet y del plugin Locate -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+    
+    <!-- JS de Leaflet y del plugin Locate -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    
+    <style>
+        body { padding: 0; margin: 0; }
+        #map { height: 100vh; width: 100vw; }
+        .tree-label {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #fff;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 2px 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script>
+        // Datos GeoJSON de la parcela, subparcela y árboles
+        var mapData = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[-75.99217707497894, -9.309693920353615], [-75.99217962586032, -9.310598277481184], [-75.99126917079558, -9.310600810244209], [-75.99126662225403, -9.309696452866412], [-75.99217707497894, -9.309693920353615]]]}, "properties": {"name": "Parcela 1 BRUNAS (1 ha)", "color": "#ff9800", "is_polygon": true}}, {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[-75.99217707497894, -9.309693920353615], [-75.99217758513453, -9.309874791782846], [-75.99199549451664, -9.309875298481344], [-75.99199498445465, -9.3096944270421], [-75.99217707497894, -9.309693920353615]]]}, "properties": {"name": "Subparcela 01 (20x20m)", "color": "#ffff00", "is_polygon": true}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99214715757721, -9.309739221821514]}, "properties": {"n": 1, "cod": "1", "dap": 33.0, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.9921315906084, -9.309707612391897]}, "properties": {"n": 2, "cod": "2", "dap": 23.2, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99213705332426, -9.30970759719048]}, "properties": {"n": 3, "cod": "3", "dap": 35.6, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99209982423763, -9.309742970994808]}, "properties": {"n": 4, "cod": "4", "dap": 11.4, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99209978342859, -9.309728501280091]}, "properties": {"n": 5, "cod": "5", "dap": 11.4, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99207703231286, -9.309732182045227]}, "properties": {"n": 6, "cod": "6", "dap": 0.0, "estado": "MUERTO", "color": "#d32f2f", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99201958707881, -9.30970159350214]}, "properties": {"n": 7, "cod": "7", "dap": 16.5, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99200047012322, -9.309702551057592]}, "properties": {"n": 8, "cod": "8", "dap": 16.9, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99199960047537, -9.309717023305994]}, "properties": {"n": 9, "cod": "9", "dap": 12.2, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99199970248766, -9.309753197593897]}, "properties": {"n": 10, "cod": "10", "dap": 29.3, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99204160116903, -9.309759411562784]}, "properties": {"n": 11, "cod": "11", "dap": 0.0, "estado": "MUERTO", "color": "#d32f2f", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99213722166792, -9.30976728476301]}, "properties": {"n": 12, "cod": "12", "dap": 47.5, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99212818600749, -9.30979172774215]}, "properties": {"n": 13, "cod": "13", "dap": 19.9, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99213092501805, -9.309794433212874]}, "properties": {"n": 14, "cod": "14", "dap": 26.7, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99208268631888, -9.309799993632593]}, "properties": {"n": 15, "cod": "15", "dap": 40.7, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99201181381257, -9.309850835238226]}, "properties": {"n": 16, "cod": "16", "dap": 20.8, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99201822779013, -9.309865287220077]}, "properties": {"n": 17, "cod": "17", "dap": 11.0, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99210185174029, -9.309816218858359]}, "properties": {"n": 18, "cod": "18", "dap": 27.2, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99216283168022, -9.309808814250395]}, "properties": {"n": 19, "cod": "19", "dap": 0.0, "estado": "MUERTO", "color": "#d32f2f", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99213382982272, -9.309855921898732]}, "properties": {"n": 20, "cod": "20", "dap": 28.7, "estado": "VIVO", "color": "#388e3c", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99201457322587, -9.309860775567385]}, "properties": {"n": 21, "cod": "R1-21", "dap": 13.4, "estado": "RECLUTA", "color": "#1976d2", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99206280428382, -9.309852502084397]}, "properties": {"n": 22, "cod": "R2-22", "dap": 19.0, "estado": "RECLUTA", "color": "#1976d2", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99208556816023, -9.309853343105187]}, "properties": {"n": 23, "cod": "R3-23", "dap": 20.8, "estado": "RECLUTA", "color": "#1976d2", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99208633578212, -9.309802696570243]}, "properties": {"n": 24, "cod": "R4-24", "dap": 10.7, "estado": "RECLUTA", "color": "#1976d2", "is_polygon": false}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-75.99210441731064, -9.309757428042012]}, "properties": {"n": 25, "cod": "R5-25", "dap": 11.4, "estado": "RECLUTA", "color": "#1976d2", "is_polygon": false}}]};
+        
+        // Extraemos las coordenadas centrales para abrir el mapa justo en la subparcela
+        var centerLon = mapData.features[1].geometry.coordinates[0][0][0];
+        var centerLat = mapData.features[1].geometry.coordinates[0][0][1];
+        
+        var map = L.map('map').setView([centerLat, centerLon], 21);
+
+        // Capa base de Satélite (Google Maps)
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 23,
+            subdomains:['mt0','mt1','mt2','mt3'],
+            attribution: '© Google'
+        }).addTo(map);
+
+        // Renderizar polígonos y puntos
+        L.geoJSON(mapData, {
+            style: function(feature) {
+                if (feature.properties.is_polygon) {
+                    return {
+                        color: feature.properties.color,
+                        weight: feature.properties.name.includes("1 ha") ? 2 : 3,
+                        dashArray: feature.properties.name.includes("1 ha") ? '5, 10' : '',
+                        fillOpacity: 0.1
+                    };
+                }
+            },
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 7,
+                    fillColor: feature.properties.color,
+                    color: "#ffffff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.9
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                if (feature.properties.is_polygon) {
+                    layer.bindPopup("<b>" + feature.properties.name + "</b>");
+                } else {
+                    var popupContent = "<b>Árbol N° " + feature.properties.n + "</b><br>" +
+                                       "Código/Placa: " + feature.properties.cod + "<br>" +
+                                       "Estado: " + feature.properties.estado + "<br>" +
+                                       "DAP 2023: " + (feature.properties.dap === 0.0 ? 'Muerto' : feature.properties.dap + ' cm');
+                    layer.bindPopup(popupContent);
+                    layer.bindTooltip(feature.properties.cod.toString(), {
+                        permanent: true, 
+                        direction: 'right', 
+                        className: 'tree-label',
+                        offset: [8, 0]
+                    });
+                }
+            }
+        }).addTo(map);
+
+        // ==========================================
+        // CONTROL DE GEOLOCALIZACIÓN (EL PUNTO AZUL)
+        // ==========================================
+        L.control.locate({
+            position: 'topright',
+            strings: {
+                title: "Mostrar mi ubicación en la parcela"
+            },
+            locateOptions: {
+                maxZoom: 22,
+                enableHighAccuracy: true // Usa el GPS en lugar del WiFi/Red para mayor precisión en campo
+            },
+            icon: 'leaflet-control-locate-location-arrow',
+            circleStyle: {
+                color: '#136AEC',
+                fillColor: '#136AEC',
+                fillOpacity: 0.15,
+                opacity: 0.5,
+                weight: 2
+            },
+            markerStyle: {
+                color: '#fff',
+                fillColor: '#2A93EE',
+                fillOpacity: 1,
+                weight: 3,
+                opacity: 1,
+                radius: 7
+            }
+        }).addTo(map);
+        
+    </script>
+</body>
+</html>
